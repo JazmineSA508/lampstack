@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+        apache-server:
+                build:
+                        context: ./apache-server
+                volumes: 
+                        - "./html/:/var/www/html/"
+                ports: 
+                        - "80:80"
+                links:
+                        - 'mysql-server'
+
+        mysql-server: 
+                image: mysql:8.0.22
+                volumes:
+                        - mysql-data:/var/lib/mysql
+                environment:
+                        TZ: "US/Eastern"
+                        MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+                        MYSQL_ROOT_PASSWORD: "rootpass"
+                        MYSQL_USER: 'test'
+                        MYSQL_PASSWORD: 'testpass'
+                        MYSQL_DATABASE: 'testdb'
+
+        phpmyadmin:
+                image: phpmyadmin/phpmyadmin:5.0.2
+                environment:
+                        PMA_HOST: mysql-server
+                        PMA_USER: root
+                        PMA_PASSWORD: rootpass
+                ports:
+                        - "5000:80"
+volumes:
+        mysql-data:
+
